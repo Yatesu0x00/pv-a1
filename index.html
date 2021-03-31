@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <style>
+            body
+            {
+                background-color: lightgrey;
+            }
+            #box
+            {
+                background-color: whitesmoke;
+                border-style: solid;
+                padding: 5px;
+                width: 300px;
+            }
+            #tempEingabe
+            {
+                width: 80px;
+            }
+        </style>
+        <script>
+            var temp;
+
+            window.onload=function()
+            {
+                temp = document.getElementById("tempEingabe");
+
+                temp.focus();
+                reset();
+            }
+
+            function validateMesswert()
+            {
+                if(temp.value == "")
+                {
+                    alert("Messwert eingeben");
+                    temp.focus();
+
+                    return false;
+                }
+                else if(isNaN(temp.value))
+                {
+                    alert("Es sollte schon eine Zahl sein");
+                    temp.focus();
+
+                    return false;
+                }
+                else
+                {
+                    document.getElementById("usecase").value = "tempData";
+                    document.getElementById("Form1").submit();
+
+                    return true;
+                }               
+            }     
+
+            function Ausgabe()
+            {
+                document.getElementById("usecase").value = "tempAusgabe";
+                document.getElementById("Form1").submit();
+            }
+
+            function reset()
+            {
+                temp.value="";
+            }
+        </script>
+    </head>
+    <body>
+        <form id="Form1" action="tempDB.php" method="post">
+            <div id="box">
+                    <div style="margin-top: 5px;">
+                        <label>Messwert: <input id="tempEingabe" name="temp" type="text" onclick="reset()"> °C</label><p></p>                       
+                        <input id="speichern" type="button" value="Speichern" onclick="validateMesswert()"/> 
+                        <input id="zurücksetzten" type="button" value="Zurücksetzten" onclick="reset()"/>
+                        <input id="auswertung" type="button" value="Auswertung" onclick="Ausgabe()"/>
+                        <input id="usecase" name="usecase" type="hidden"/>                                                                               
+                    </div>
+			</form>
+		</div>
+    </body>
+</html>
