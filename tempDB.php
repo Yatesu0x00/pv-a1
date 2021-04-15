@@ -49,6 +49,11 @@
                         {
                             color: blue;
                         }
+                        td
+                        {
+                            color: blue;
+                            font-size: 17px;
+                        }
                         </style>	
 						</head>
 						<body>
@@ -56,9 +61,16 @@
 								<p>Durchschnitt: $avg °C</p>
 								<p>Anzahl: $anz</p>
 								<p>Minimum: $min °C</p>
-								<p>Maximum: $max °C</p>
-								<a href=\"Index.html\" style=\"color: purple;\">Zurück zur Eingabe</a>
+								<p>Maximum: $max °C</p>                          
+                                <p></p>
 							</div>
+                            <div>
+                            <table>
+                                <tr>
+                                    <td>Index&nbsp;&nbsp;</td>
+                                    <td>Werte</td>
+                                </tr>
+                            </div>
 						</body>
 					</html>";
 	}
@@ -84,7 +96,7 @@
             mysqli_query($db, $query);
         }
 
-        header("Location: http://localhost/pv_a1/");
+        header("Location: http://localhost/it31_goralewski/pv-a1-main/");
     }
     else if($_POST['usecase'] == "tempAusgabe")
     {
@@ -105,8 +117,11 @@
         //Methode 2 -> das selbe wie oben aber in einer Zeile
 		$min = mysqli_fetch_assoc(mysqli_query($db, "SELECT MIN(Temp) as minimum FROM Temperatur;"));
 		$max = mysqli_fetch_assoc(mysqli_query($db, "SELECT MAX(Temp) as maximum FROM Temperatur;"));
+        $werte = mysqli_fetch_assoc(mysqli_query($db, "SELECT Temp as _werte FROM Temperatur;"));       
 
-        if($anz["anzahl"] == 0) 
+        $index = 1;
+
+        if($anz["anzahl"] == 0)
         {
              printf(error("Keine messwerte gefunden"));
              mysqli_close($db);
@@ -114,7 +129,31 @@
         }
         else
         {
-            printf(success($avg["durchschnitt"], $anz["anzahl"], $min["minimum"], $max["maximum"]));
-        }       
-    }
+            printf(success($avg["durchschnitt"], $anz["anzahl"], $min["minimum"], $max["maximum"]));       
+            
+            $result = mysqli_query($db, "SELECT Temp FROM Temperatur ORDER BY Temp DESC"); 
+
+            if(mysqli_num_rows($result)) 
+            { 
+                while($row = mysqli_fetch_array($result)) 
+                { 
+                    echo"
+                    <tr>
+                        <td>{$index}</td> 
+                        <td>{$row['Temp']}</td>
+                    </tr>"; 
+                    $index++;
+                } 
+            }
+
+            echo"
+            <table>
+                <tr>
+                    <td>
+                        <a href=\"Index.html\" style=\"color: purple;\">Zurück zur Eingabe</a>
+                    </td>
+                </tr>
+            </table>";
+        }
+    }          
 ?>
